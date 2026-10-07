@@ -54,8 +54,10 @@ class FormatResolver {
     bool srgb = true;
     bool compressed = false;  // BC1/BC7 native?
     bool depth24_s8 = true;
+    HostSupport() = default;
+    HostSupport(bool s, bool c, bool d) : srgb(s), compressed(c), depth24_s8(d) {}
   };
-  explicit FormatResolver(HostSupport h = {}) : host_(h) {}
+  explicit FormatResolver(HostSupport h = HostSupport{}) : host_(h) {}
   FormatResolution Resolve(Format guest, Format& out_host) const;
   // View validation: aspect/mip/layer/sample/usage coherence.
   Result<void> ValidateView(Format fmt, ViewType view, uint32_t mips,

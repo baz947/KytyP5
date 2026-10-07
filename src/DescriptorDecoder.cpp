@@ -34,7 +34,7 @@ Result<CanonicalImage> DescriptorDecoder::DecodeImage(
   uint64_t addr = 0;
   for (int i = 0; i < 8; ++i) addr |= uint64_t(raw.bytes[i]) << (8 * i);
   if (addr == 0)
-    return Result<CanonicalImage>::Fail(RuntimeError::InvalidDescriptor,
+    return Result<CanonicalImage>::Fail(RuntimeError::InvalidResource,
                                         "null descriptor address");
   uint8_t fmt_id = raw.bytes[8];
   Format fmt = Format::Unknown;
@@ -45,7 +45,7 @@ Result<CanonicalImage> DescriptorDecoder::DecodeImage(
     case 4: fmt = Format::D32_FLOAT; break;
     case 5: fmt = Format::R32_FLOAT; break;
     default:
-      return Result<CanonicalImage>::Fail(RuntimeError::InvalidDescriptor,
+      return Result<CanonicalImage>::Fail(RuntimeError::InvalidResource,
                                           "unknown format id");
   }
   CanonicalImage im;

@@ -33,7 +33,7 @@ struct CanonicalImage {
   uint32_t swizzle = 0;  // packed 4x3bit
   uint32_t usage = 0;    // bit: sampled|storage|rt|ds|...
   bool fmask = false, htile = false;
-  bool depth = false, stencil = false;
+  bool is_depth = false, stencil = false;
   ResolutionState resolution = ResolutionState::Unknown;
   ResourceKind kind = ResourceKind::Image;
   uint64_t mem_version = 0;
