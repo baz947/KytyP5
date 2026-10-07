@@ -9,6 +9,10 @@
 
 namespace kyty::gpu {
 
+// Canonical capability enum lives in kyty:: (Compat.h); alias it at
+// namespace scope so qualified gpu::GpuCapability works on all compilers.
+using GpuCapability = ::kyty::GpuCapability;
+
 struct HostFeatures {
   bool descriptor_arrays = true;
   bool non_uniform_indexing = true;
