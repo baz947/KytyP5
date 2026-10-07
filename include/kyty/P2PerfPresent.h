@@ -18,7 +18,7 @@ namespace kyty::p2 {
 
 struct CacheStats {
   uint64_t hits = 0, misses = 0, evictions = 0;
-  [[nodiscard]] size_t size = 0;
+  size_t size = 0;  // NOTE: no [[nodiscard]] here (ill-formed on members)
 };
 
 class PipelineCache {

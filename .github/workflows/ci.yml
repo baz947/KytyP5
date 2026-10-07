@@ -28,6 +28,7 @@ jobs:
           fetch-depth: 0
 
       - name: Init upstream submodule (best effort)
+        shell: bash
         run: git submodule update --init --depth 1 upstream/KyTyPS5 || echo "upstream unavailable"
 
       - name: Setup Python
