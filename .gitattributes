@@ -1,0 +1,26 @@
+# Cross-platform line endings: normalize to LF in repo, native on checkout.
+* text=auto
+
+# C++ sources: always LF (MSVC accepts LF with /utf-8).
+*.cpp text eol=lf
+*.h text eol=lf
+*.hpp text eol=lf
+
+# Build / CI: always LF (YAML and CMake break on CRLF edge cases).
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.cmake text eol=lf
+CMakeLists.txt text eol=lf
+
+# Python: LF.
+*.py text eol=lf
+
+# Windows-only helpers keep CRLF if ever added.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary corpus blobs (if added later) stay untouched.
+*.bin binary
+*.sprx binary
+*.elf binary

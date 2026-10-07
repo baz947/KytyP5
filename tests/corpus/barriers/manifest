@@ -1,0 +1,2 @@
+barrier.full|None|exec=full|ok
+barrier.divergent|None|exec=partial|error=ShaderFailure

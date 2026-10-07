@@ -1,0 +1,2 @@
+desc.bindless_0|DynamicDescriptors|desc:idx=0|view=ok
+desc.nonuniform_1|DynamicDescriptors|desc:idx=divergent|view=ok+divergent

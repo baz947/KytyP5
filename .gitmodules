@@ -1,0 +1,3 @@
+[submodule "upstream/KytyPS5"]
+	path = upstream/KytyPS5
+	url = https://github.com/KytyPS5/KytyPS5.git

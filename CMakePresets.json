@@ -1,0 +1,61 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": { "major": 3, "minor": 20, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "win-ninja",
+      "displayName": "Windows (Ninja, MSVC)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/win-ninja",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" },
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" }
+    },
+    {
+      "name": "win-vs",
+      "displayName": "Windows (Visual Studio 2022)",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "binaryDir": "${sourceDir}/build/win-vs"
+    },
+    {
+      "name": "linux-ninja",
+      "displayName": "Linux (Ninja, GCC/Clang)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/linux-ninja",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" },
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux" }
+    },
+    {
+      "name": "macos-ninja",
+      "displayName": "macOS (Ninja, AppleClang)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/macos-ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_OSX_ARCHITECTURES": "arm64;x86_64"
+      },
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Darwin" }
+    },
+    {
+      "name": "ci",
+      "displayName": "CI (portable defaults)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/ci",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+    }
+  ],
+  "buildPresets": [
+    { "name": "ci", "configurePreset": "ci" },
+    { "name": "win-ninja", "configurePreset": "win-ninja" },
+    { "name": "linux-ninja", "configurePreset": "linux-ninja" },
+    { "name": "macos-ninja", "configurePreset": "macos-ninja" }
+  ],
+  "testPresets": [
+    {
+      "name": "ci",
+      "configurePreset": "ci",
+      "output": { "outputOnFailure": true },
+      "execution": { "timeout": 600 }
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+bda.resolve_ok|Bda|bda:valid|addr=ok
+bda.persistent_fault|Bda|bda:invalid|error=InvalidGuestMemory

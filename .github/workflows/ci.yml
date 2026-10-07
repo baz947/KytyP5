@@ -1,0 +1,61 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-test:
+    name: ${{ matrix.os }} / ${{ matrix.compiler }} / py${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        compiler: [default]
+        python: ["3.11", "3.12"]
+        exclude:
+          # keep the matrix small but cross-platform: one python per OS runs C++ too
+          - os: windows-latest
+            python: "3.11"
+          - os: macos-latest
+            python: "3.11"
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Init upstream submodule (best effort)
+        run: git submodule update --init --depth 1 upstream/KyTyPS5 || echo "upstream unavailable"
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Setup CMake + Ninja
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: "~3.28.0"
+          ninjaVersion: "^1.12.0"
+
+      - name: Setup MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Configure
+        run: cmake --preset ci
+
+      - name: Build
+        run: cmake --build --preset ci --config Release
+
+      - name: CTest (C++ + python mirror)
+        run: ctest --preset ci --build-config Release --output-on-failure
+
+      - name: Python mirror (no toolchain fallback)
+        run: python run_tests.py
+
+      - name: Differential vs upstream (live when cloned, static otherwise)
+        run: python tools/diff_upstream.py

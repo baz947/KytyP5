@@ -1,0 +1,3 @@
+fmt.bc1_emu|None|fmt=BC1|fallback=emu
+fmt.rgba8_native|None|fmt=RGBA8|native
+fmt.srgb_reinterpret|None|fmt=SRGB|reinterpret

@@ -1,0 +1,2 @@
+atom.img_add|ImageAtomics|atomic:image|ok
+atom.buf64|None|atomic:buf64|ok-or-emulated

@@ -1,0 +1,3 @@
+# feature: wave64 | requirement column gates on host caps
+wave64.split_basic|Wave64|wave64:split|backend=split
+wave64.native_64|Wave64|wave64:native|backend=native
