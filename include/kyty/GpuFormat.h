@@ -50,12 +50,15 @@ inline Aspect FormatAspect(Format f) {
 class FormatResolver {
  public:
   // Host capability flags (subset; full set lives in HostGpuCaps).
+  // NOTE: plain ctors, no NSDMIs: GCC rejects NSDMI types in default
+  // arguments before the enclosing class is complete.
   struct HostSupport {
-    bool srgb = true;
-    bool compressed = false;  // BC1/BC7 native?
-    bool depth24_s8 = true;
-    HostSupport() = default;
-    HostSupport(bool s, bool c, bool d) : srgb(s), compressed(c), depth24_s8(d) {}
+    bool srgb;
+    bool compressed;  // BC1/BC7 native?
+    bool depth24_s8;
+    HostSupport() : srgb(true), compressed(false), depth24_s8(true) {}
+    HostSupport(bool s, bool c, bool d)
+        : srgb(s), compressed(c), depth24_s8(d) {}
   };
   explicit FormatResolver(HostSupport h = HostSupport{}) : host_(h) {}
   FormatResolution Resolve(Format guest, Format& out_host) const;
