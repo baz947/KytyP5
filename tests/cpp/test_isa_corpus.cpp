@@ -58,7 +58,7 @@ int main() {
   bare.bda = false;
   bare.image_atomics = false;
   bare.subgroup32 = false;
-  CorpusRunner run_bare(gpu::HostGpuCaps(bare));
+  CorpusRunner run_bare{gpu::HostGpuCaps{bare}};
   for (auto& c : BuiltinCorpus()) run_bare.Add(c);
   auto rb = run_bare.Run(echo);
   size_t sk2 = 0;
