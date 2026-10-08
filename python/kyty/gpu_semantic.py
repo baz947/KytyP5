@@ -85,6 +85,19 @@ def track_runtime(bda, valid):
         return Result.fail(RuntimeError.InvalidResource, "null BDA")
     return Result.ok({"addr": bda, "res": ResolutionState.Runtime})
 
+def track_runtime_masked(bda, total, mask):
+    if not 1 <= total <= 32:
+        return Result.fail(RuntimeError.InvalidArgument, "total 1..32")
+    if mask & ~((0xFFFFFFFF if total == 32 else (1 << total) - 1)):
+        return Result.fail(RuntimeError.InvalidArgument, "mask exceeds total")
+    if not bda:
+        return Result.fail(RuntimeError.InvalidResource, "null BDA")
+    if not mask:
+        return Result.fail(RuntimeError.InvalidResource,
+                           "not a valid runtime value")
+    return Result.ok({"addr": bda, "res": ResolutionState.Runtime,
+                       "total": total, "mask": mask})
+
 def select_wave_backend(wave64, host64, allow_split):
     if not wave64: return Result.ok(WaveBackend.Native)
     if host64: return Result.ok(WaveBackend.Native)

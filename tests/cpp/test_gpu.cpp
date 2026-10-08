@@ -71,6 +71,17 @@ int main() {
   assert(!tr.TrackRuntime(0, 1, 1, 0, false).ok());
   auto rt = tr.TrackRuntime(0xBDA0, 3, 9, 0xABC, true);
   assert(rt.ok() && rt.value.resolution == ResolutionState::Runtime);
+  // Masked (upstream 8-dword image handles): zero mask fails at source,
+  // partial masks stay Runtime for lowering, stray bits rejected.
+  assert(!tr.TrackRuntimeMasked(0xBDA0, 3, 9, 0, 8, 0x00).ok());
+  auto pm = tr.TrackRuntimeMasked(0xBDA0, 3, 9, 0, 8, 0x0F);
+  assert(pm.ok() && pm.value.dword_total == 8 &&
+         pm.value.resolved_mask == 0x0F);
+  auto fm = tr.TrackRuntimeMasked(0xBDA0, 3, 9, 0, 8, 0xFF);
+  assert(fm.ok() && fm.value.resolved_mask == 0xFF);
+  assert(!tr.TrackRuntimeMasked(0xBDA0, 3, 9, 0, 8, 0x1FF).ok());
+  assert(!tr.TrackRuntimeMasked(0xBDA0, 3, 9, 0, 0, 0xFF).ok());
+  assert(!tr.TrackRuntimeMasked(0xBDA0, 3, 9, 0, 33, 0xFF).ok());
 
   // Materialization: structured, never boolean
   ResourceMaterializer mz;

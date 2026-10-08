@@ -21,6 +21,12 @@ def test_materialize_and_tracking():
     assert track_runtime(0xBDA0, True).is_ok()
     r = track_runtime(0, False)
     assert not r.is_ok() and "valid runtime value" in r.detail
+    assert not track_runtime_masked(0xBDA0, 8, 0x00).is_ok()
+    pm = track_runtime_masked(0xBDA0, 8, 0x0F)
+    assert pm.is_ok() and pm.value["mask"] == 0x0F
+    assert track_runtime_masked(0xBDA0, 8, 0xFF).is_ok()
+    assert not track_runtime_masked(0xBDA0, 8, 0x1FF).is_ok()
+    assert not track_runtime_masked(0xBDA0, 0, 0xFF).is_ok()
 
 def test_wave_barrier_caps_timeline_hang():
     assert select_wave_backend(False, False, False).is_ok()

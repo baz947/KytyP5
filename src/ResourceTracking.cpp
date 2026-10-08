@@ -60,4 +60,28 @@ void ResourceTracker::InvalidateByMemVersion(uint64_t new_version) {
   }
 }
 
+Result<ResourceHandle> ResourceTracker::TrackRuntimeMasked(
+    uint64_t bda_value, uint32_t cfg_block, uint64_t mem_version,
+    uint64_t wave_key, uint8_t dword_total, uint32_t resolved_mask) {
+  if (dword_total == 0 || dword_total > 32)
+    return Result<ResourceHandle>::Fail(RuntimeError::InvalidArgument,
+                                        "dword_total out of 1..32");
+  uint32_t legal = dword_total == 32 ? 0xFFFFFFFFu
+                                     : ((1u << dword_total) - 1u);
+  if (resolved_mask & ~legal)
+    return Result<ResourceHandle>::Fail(RuntimeError::InvalidArgument,
+                                        "mask exceeds dword_total");
+  if (bda_value == 0)
+    return Result<ResourceHandle>::Fail(RuntimeError::InvalidResource,
+                                        "null BDA runtime value");
+  if (resolved_mask == 0)
+    return Result<ResourceHandle>::Fail(
+        RuntimeError::InvalidResource,
+        "GetImageResource: not a valid runtime value");
+  ResourceHandle h{bda_value, 0, ResolutionState::Runtime, cfg_block,
+                   mem_version, wave_key, dword_total, resolved_mask};
+  table_[next_id_++] = h;
+  return Result<ResourceHandle>::Ok(h);
+}
+
 }  // namespace kyty::gpu
