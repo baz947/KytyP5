@@ -71,6 +71,38 @@ int main() {
   ChaosInjector miss(ChaosPlan{{ChaosFault::DescriptorMiss}});
   assert(!miss.BeforeDescriptorBind().ok());
 
+  // FailureReport: every field derives from fault + context.
+  FaultRecord fr;
+  fr.kind = FaultKind::BdaFault;
+  fr.guest_address = 0x90000;
+  fr.size = 8;
+  fr.access = 1;
+  fr.thread = 100;
+  fr.guest_pc = 0x1234;
+  fr.queue = 2;
+  fr.submit = 42;
+  fr.resource = 7;
+  fr.shader = 0xABCD;
+  fr.retry_count = 3;
+  fr.correlation.frame = 7;
+  FailureContext fctx;
+  fctx.module_symbol = "app:RenderFrame";
+  fctx.tls_base = 0x1000000000ull;
+  fctx.host_result = "VkErrorDeviceLost";
+  fctx.recovery = "fallback:emulated-format";
+  auto rep = BuildReport(fr, fctx);
+  assert(rep.guest_pc == 0x1234);
+  assert(rep.corr.frame == 7);
+  assert(rep.module_symbol == "app:RenderFrame");
+  assert(rep.abi == "sysv-amd64");
+  assert(rep.thread_tls.find("thread=100") != std::string::npos);
+  assert(rep.mem_range.find("0x90000") != std::string::npos);
+  assert(rep.resource_fp == "res=7");  // empty fp falls back to id
+  assert(rep.shader_hash == 0xABCD);
+  assert(rep.queue_submit.find("submit=42") != std::string::npos);
+  assert(rep.host_result == "VkErrorDeviceLost");
+  assert(rep.recovery == "fallback:emulated-format");
+
   std::puts("test_infra OK");
   return 0;
 }

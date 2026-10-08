@@ -48,4 +48,11 @@ class CorpusRunner {
 // Built-in manifests (mirrors tests/corpus/<feature>/manifest).
 std::vector<CorpusCase> BuiltinCorpus();
 
+// Disk loader: parses tests/corpus/<feature>/manifest files
+// (lines: name|requirement|input|expected, '#' comments, blanks skipped).
+// Tries each candidate root in order; returns cases from the first root
+// that yields at least one case, else an empty vector (never throws).
+std::vector<CorpusCase> LoadManifests(
+    const std::vector<std::string>& candidate_roots);
+
 }  // namespace kyty::infra

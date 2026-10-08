@@ -70,6 +70,24 @@ int main() {
   // Only Unavailable gates skip; Emulated/Fallback still run via lowering.
   assert(sk2 >= 1 && rt_skipped);
 
+  // Disk manifests: single source of truth; builtin names all present.
+  auto disk = LoadManifests({"tests/corpus", "../tests/corpus",
+                             "../../tests/corpus",
+                             "../../../tests/corpus"});
+  assert(!disk.empty());
+  for (auto& b : BuiltinCorpus()) {
+    bool found = false;
+    for (auto& c : disk) {
+      if (c.name == b.name && c.expected == b.expected) {
+        found = true;
+        break;
+      }
+    }
+    assert(found);
+  }
+  // Unknown roots never crash, just yield nothing.
+  assert(LoadManifests({"no/such/dir"}).empty());
+
   std::puts("test_isa_corpus OK");
   return 0;
 }

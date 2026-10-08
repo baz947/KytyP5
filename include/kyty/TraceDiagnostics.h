@@ -7,6 +7,7 @@
 #include <vector>
 #include "kyty/Compat.h"
 #include "kyty/Diagnostics.h"
+#include "kyty/FaultManager.h"
 
 namespace kyty::infra {
 
@@ -45,5 +46,20 @@ class TraceCollector {
  private:
   std::vector<TraceEvent> events_;
 };
+
+// Free-form context the fault itself doesn't carry (symbols/ABI/host).
+struct FailureContext {
+  std::string module_symbol;
+  std::string abi = "sysv-amd64";
+  uint64_t tls_base = 0;
+  std::string resource_fp;
+  std::string host_result;
+  std::string recovery;
+};
+
+// Assembles a reconstructable report from a FaultRecord + context.
+// Pure function: every field derives from inputs, nothing is dropped.
+FailureReport BuildReport(const FaultRecord& fault,
+                          const FailureContext& ctx);
 
 }  // namespace kyty::infra

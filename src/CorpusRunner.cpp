@@ -1,4 +1,6 @@
 #include "kyty/CorpusRunner.h"
+#include <filesystem>
+#include <fstream>
 
 namespace kyty::infra {
 
@@ -56,6 +58,42 @@ std::vector<CorpusCase> BuiltinCorpus() {
       {"network", "net.loopback", "None", "send/recv", "echo=ok"},
       {"ray_tracing", "rt.query", "RayTracing", "ray:query", "lowered"},
   };
+}
+
+std::vector<CorpusCase> LoadManifests(
+    const std::vector<std::string>& candidate_roots) {
+  namespace fs = std::filesystem;
+  for (auto& root : candidate_roots) {
+    std::error_code ec;
+    if (!fs::is_directory(root, ec)) continue;
+    std::vector<CorpusCase> out;
+    for (auto& de : fs::directory_iterator(root, ec)) {
+      if (ec || !de.is_directory(ec)) continue;
+      std::ifstream f(de.path() / "manifest");
+      if (!f) continue;
+      std::string feature = de.path().filename().string();
+      std::string line;
+      while (std::getline(f, line)) {
+        if (!line.empty() && line.back() == '\r') line.pop_back();
+        if (line.empty() || line[0] == '#') continue;
+        std::vector<std::string> parts;
+        size_t pos = 0;
+        while (true) {
+          size_t bar = line.find('|', pos);
+          parts.push_back(line.substr(pos, bar == std::string::npos
+                                                 ? bar
+                                                 : bar - pos));
+          if (bar == std::string::npos) break;
+          pos = bar + 1;
+        }
+        if (parts.size() != 4) continue;  // malformed -> skip, never crash
+        out.push_back(
+            CorpusCase{feature, parts[0], parts[1], parts[2], parts[3]});
+      }
+    }
+    if (!out.empty()) return out;
+  }
+  return {};
 }
 
 }  // namespace kyty::infra

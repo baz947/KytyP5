@@ -22,13 +22,15 @@ def test_corpus():
     r2.add_all([BUILTIN[4]])
     res2 = r2.run(lambda inp: "mismatch")
     assert res2[0][1] == "fail"
-    # manifests on disk parse
+    # manifests on disk parse and cover every builtin case
     base = os.path.join(os.path.dirname(__file__), "..", "corpus")
-    total = 0
+    disk = []
     for root, _, files in os.walk(base):
         if "manifest" in files:
-            total += len(load_manifest(os.path.join(root, "manifest")))
-    assert total >= 12
+            disk.extend(load_manifest(os.path.join(root, "manifest")))
+    assert len(disk) >= 12
+    for _, name, _, _, exp in BUILTIN:
+        assert any(n == name and e == exp for _, n, _, _, e in disk), name
 
 def _echo(inp):
     table = {

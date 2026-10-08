@@ -33,6 +33,20 @@ class TraceCollector:
     def slice(self, frame, submit):
         return [e for e in self.ev if e[0] == frame and e[1] == submit]
 
+def build_report(fault, ctx):
+    """fault: dict(kind,addr,size,access,thread,pc,queue,submit,res,shader,retries,frame).
+    ctx: dict(module,abi,tls,res_fp,host,recovery). Pure: all fields derive."""
+    return {
+        "pc": fault["pc"], "frame": fault.get("frame", 0),
+        "module": ctx.get("module", ""), "abi": ctx.get("abi", "sysv-amd64"),
+        "thread_tls": f"thread={fault['thread']} tls={ctx.get('tls', 0):#x}",
+        "mem": f"{fault['addr']:#x}+{fault['size']:#x} acc={fault['access']}",
+        "resource": ctx.get("res_fp") or f"res={fault['res']}",
+        "shader": fault["shader"],
+        "queue": f"q={fault['queue']} submit={fault['submit']} retry={fault['retries']}",
+        "host": ctx.get("host", ""), "recovery": ctx.get("recovery", ""),
+    }
+
 class Chaos:
     def __init__(self, faults=()): self.f = set(faults)
     def gpu_submit(self):
