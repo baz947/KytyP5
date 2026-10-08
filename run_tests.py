@@ -15,8 +15,9 @@ import tests.python.test_backend_bridge as tbb
 import tests.python.test_p2_rdna as tp2
 import tests.python.test_diff_upstream as tdu
 import tests.python.test_soak as tso
+import tests.python.test_spirv as tsp
 
-mods = [tm, tf, tc, tl, ts, tg, tsh, ti, tic, tbb, tp2, tdu, tso]
+mods = [tm, tf, tc, tl, ts, tg, tsh, ti, tic, tbb, tp2, tdu, tso, tsp]
 failed = 0
 total = 0
 for m in mods:
