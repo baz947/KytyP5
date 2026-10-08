@@ -60,3 +60,13 @@ jobs:
 
       - name: Differential vs upstream (live when cloned, static otherwise)
         run: python tools/diff_upstream.py
+
+      - name: Upstream patches apply cleanly
+        shell: bash
+        run: |
+          [ -d upstream/KyTyPS5/src ] || { echo "upstream absent, skipping"; exit 0; }
+          for p in patches/upstream/*.patch; do
+            [ -e "$p" ] || continue
+            git -C upstream/KyTyPS5 apply --check "../../$p" || exit 1
+          done
+          echo "all upstream patches apply"

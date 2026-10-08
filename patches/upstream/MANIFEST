@@ -1,0 +1,5 @@
+# Upstream fix proposals shipped through this repo.
+# Format: file | upstream issue | upstream pin | risk | summary
+# Risk: diagnostic-only (message text) | behavioral (control flow).
+# apply: git -C upstream/KyTyPS5 apply --check ../../patches/upstream/<file>
+855-getimage-diagnostics.patch | KytyPS5/KytyPS5#855 | 5a8808086a9815b67d4822cd20cf1e8a7a05f002 | diagnostic-only | GetHandle image Fail now reports handle arity + per-dword type/proof states
