@@ -5,7 +5,8 @@ from kyty.p2_rdna import FULL, LruCache, PresentSim
 def test_full_isa():
     assert len(FULL) >= 50
     for n in ("MIMG.SAMPLE_P", "MIMG.ATOMIC_CMPXCHG", "DS.ADD_U32",
-              "FLAT.LOAD", "VOP.MAD_F32"):
+              "FLAT.LOAD", "VOP.MAD_F32", "SOP1.S_MOV_B32",
+              "VOP3P.V_PK_ADD_F16", "VINTRP.V_INTERP_P1_F32", "EXP.EXPORT"):
         assert n in FULL
 
 def test_cache_present():

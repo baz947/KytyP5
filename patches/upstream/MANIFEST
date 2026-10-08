@@ -3,3 +3,5 @@
 # Risk: diagnostic-only (message text) | behavioral (control flow).
 # apply: git -C upstream/KyTyPS5 apply --check ../../patches/upstream/<file>
 855-getimage-diagnostics.patch | KytyPS5/KytyPS5#855 | 5a8808086a9815b67d4822cd20cf1e8a7a05f002 | diagnostic-only | GetHandle image Fail now reports handle arity + per-dword type/proof states
+1005-materialize-diagnostics.patch | KytyPS5/KytyPS5#1005 | 5a8808086a9815b67d4822cd20cf1e8a7a05f002 | diagnostic-only | silent early-false exits in MaterializeResources now use SpecializationFail with the reason
+# NOTE KytyPS5/KytyPS5#281 (missing-opcode aggregate): no patch — upstream WithUnsupportedReason/InstructionToString already report family+opcode+raw+reason. Closed our-side instead: SOP1/2/K/C, VOP3P, VINTRP, EXP as first-class coverage entries (RdnaIsaFull).

@@ -17,6 +17,12 @@ int main() {
   assert(full.FindByName("DS.ADD_U32") != nullptr);
   assert(full.FindByName("FLAT.LOAD") != nullptr);
   assert(full.FindByName("VOP2.MAD_F32") != nullptr);
+  // #281 families covered as first-class entries (not lumped).
+  assert(full.FindByName("SOP1.S_MOV_B32") != nullptr);
+  assert(full.FindByName("SOPC.S_CMP_EQ_U32") != nullptr);
+  assert(full.FindByName("VOP3P.V_PK_ADD_F16") != nullptr);
+  assert(full.FindByName("VINTRP.V_INTERP_P1_F32") != nullptr);
+  assert(full.FindByName("EXP.EXPORT") != nullptr);
   assert(full.CoverageAt(Stage::Decode) == 1.0);
   assert(full.CoverageAt(Stage::Backend) > 0.9);
   auto by_cls = full.CoverageByClass(Stage::Backend);

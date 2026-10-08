@@ -78,10 +78,23 @@ RdnaIsaFull::RdnaIsaFull() {
   add("WAVE.BROADCAST", "wave", 0x22, Op::Broadcast, full);
   // ---- Compressed graceful path (emulated, never missing) ----
   add("FMT.BC_DECOMPRESS", "format", 3, Op::Mul, emu);
+  // ---- #281 families: scalar ALU specifics, packed math, interp, export.
+  // Coverage-only (Op::Unknown key): counted in coverage, never installed
+  // into the shared pipeline registry (keys are per-class there).
+  add("SOP1.S_MOV_B32", "sop1", 0xFFFF, Op::Unknown, full);
+  add("SOP2.S_ADD_U32", "sop2", 0xFFFF, Op::Unknown, full);
+  add("SOPK.S_MOVK_I32", "sopk", 0xFFFF, Op::Unknown, full);
+  add("SOPC.S_CMP_EQ_U32", "sopc", 0xFFFF, Op::Unknown, full);
+  add("VOP3P.V_PK_ADD_F16", "vop3p", 0xFFFF, Op::Unknown, emu);
+  add("VOP3P.V_PK_MUL_F16", "vop3p", 0xFFFF, Op::Unknown, emu);
+  add("VINTRP.V_INTERP_P1_F32", "vintrp", 0xFFFF, Op::Unknown, lowered);
+  add("VINTRP.V_INTERP_P2_F32", "vintrp", 0xFFFF, Op::Unknown, lowered);
+  add("EXP.EXPORT", "exp", 0xFFFF, Op::Unknown, lowered);
 }
 
 void RdnaIsaFull::InstallAll(CapabilityRegistry& reg) const {
   for (auto& e : entries_) {
+    if (e.pipe_op == Op::Unknown) continue;  // coverage-only, no shared key
     reg.Set(e.pipe_op, Stage::Decode, e.caps.decode);
     reg.Set(e.pipe_op, Stage::Cfg, e.caps.cfg);
     reg.Set(e.pipe_op, Stage::Translate, e.caps.translate);
