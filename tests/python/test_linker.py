@@ -50,6 +50,13 @@ def test_symbols():
     sr.define(SymbolEntry(SymbolKey(1, "tlsvar", SymbolType.Tls, ""), 1, 0))
     assert sr.resolve_tls(1, "tlsvar", "").is_ok()
     assert not sr.resolve_object(1, "tlsvar", "").is_ok()
+    # weak vs strong: strong definition wins deterministically
+    from kyty.symbol_resolver import SymbolBinding
+    sr.define(SymbolEntry(SymbolKey(2, "dup", SymbolType.Func, ""), 2, 0x3000,
+                          binding=SymbolBinding.Weak))
+    sr.define(SymbolEntry(SymbolKey(2, "dup", SymbolType.Func, ""), 3, 0x4000,
+                          binding=SymbolBinding.Global))
+    assert sr.resolve_function(2, "dup", "").value.value == 0x4000
 
 def test_reloc():
     st, v, _ = apply_one(RelocType.Relative, 0x5000, 0x10, None, True, 0x4000, False)

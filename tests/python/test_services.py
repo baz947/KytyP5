@@ -66,6 +66,13 @@ def test_video_audio_pad_net_trophy():
     assert pad.submit(0, lx=5.0, ly=float("nan")).is_ok()
     st = pad.state(0).value
     assert st["lx"] == 1.0 and st["ly"] == 0.0
+    # triggers are 0..1 already: 0.25 must survive, NaN->0, 5.0->1.0
+    assert pad.submit(0, l2=0.25, r2=0.75).is_ok()
+    st = pad.state(0).value
+    assert st["l2"] == 0.25 and st["r2"] == 0.75
+    assert pad.submit(0, l2=float("nan"), r2=5.0).is_ok()
+    st = pad.state(0).value
+    assert st["l2"] == 0.0 and st["r2"] == 1.0
     assert not pad.state(3).is_ok()
     net = NetworkManager()
     fd = net.socket().value

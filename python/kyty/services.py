@@ -71,13 +71,17 @@ class PadManager:
             return Result.fail(RuntimeError.InvalidArgument, "in use")
         self.slots[slot] = {"user": user, "state": {}, "out": {}}
         return Result.ok()
-    def submit(self, slot, lx=0.0, ly=0.0):
+    def submit(self, slot, lx=0.0, ly=0.0, l2=0.0, r2=0.0):
         if slot not in self.slots:
             return Result.fail(RuntimeError.InvalidArgument, "pad")
         def cl(v):
             if not math.isfinite(v): return 0.0
             return max(-1.0, min(1.0, v))
-        self.slots[slot]["state"] = {"lx": cl(lx), "ly": cl(ly)}
+        def cl01(v):
+            if not math.isfinite(v): return 0.0
+            return max(0.0, min(1.0, v))
+        self.slots[slot]["state"] = {"lx": cl(lx), "ly": cl(ly),
+                                     "l2": cl01(l2), "r2": cl01(r2)}
         return Result.ok()
     def state(self, slot):
         if slot not in self.slots:

@@ -29,6 +29,9 @@ int main() {
   // protect to read-only -> write must fail
   assert(mem.Protect(0x10000, 0x4000, uint8_t(Access::Read)).ok());
   assert(!mem.Write(0x10000, msg, 5).ok());
+  // range guards: zero size / out-of-range never silently Ok
+  assert(!mem.Protect(0x10000, 0, uint8_t(Access::Read)).ok());
+  assert(!mem.Synchronize(0x10000, 0).ok());
 
   // BDA bounded retry: resolver never makes progress -> controlled failure
   auto bda = mem.ResolveBda(0x90000, 8, [](uint32_t) { return false; });

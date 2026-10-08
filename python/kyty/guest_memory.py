@@ -82,6 +82,8 @@ class GuestMemory:
         return Result.ok()
 
     def protect(self, addr, size, perms):
+        c = self._check(addr, size)
+        if not c.is_ok(): return c
         for p in range(self._page_base(addr), addr + size, PAGE_SIZE):
             if p not in self.pages:
                 return Result.fail(RuntimeError.InvalidGuestMemory, "unmapped page")
@@ -91,6 +93,8 @@ class GuestMemory:
         return Result.ok()
 
     def synchronize(self, addr, size):
+        c = self._check(addr, size)
+        if not c.is_ok(): return c
         self.gpu_version += 1
         return Result.ok()
 

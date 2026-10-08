@@ -42,10 +42,15 @@ Result<void> PadManager::SubmitHostInput(int slot, PadState raw) {
   raw.ly = ClampAxis(raw.ly);
   raw.rx = ClampAxis(raw.rx);
   raw.ry = ClampAxis(raw.ry);
-  raw.l2 = ClampAxis((raw.l2 + 1.0f) * 0.5f);  // normalize defensively
-  raw.r2 = ClampAxis((raw.r2 + 1.0f) * 0.5f);
-  if (raw.l2 < 0) raw.l2 = 0;
-  if (raw.r2 < 0) raw.r2 = 0;
+  // Triggers are 0..1 (see PadState): clamp directly, NaN -> 0.
+  // (A previous (v+1)/2 mapping assumed a -1..1 host range and corrupted
+  // already-normalized 0..1 input.)
+  raw.l2 = std::isfinite(raw.l2) ? raw.l2 : 0.0f;
+  raw.r2 = std::isfinite(raw.r2) ? raw.r2 : 0.0f;
+  if (raw.l2 < 0.0f) raw.l2 = 0.0f;
+  if (raw.l2 > 1.0f) raw.l2 = 1.0f;
+  if (raw.r2 < 0.0f) raw.r2 = 0.0f;
+  if (raw.r2 > 1.0f) raw.r2 = 1.0f;
   s.state = raw;
   s.state.connected_users = 1u << uint32_t(slot);
   return Result<void>::Ok();

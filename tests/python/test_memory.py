@@ -21,6 +21,10 @@ def test_protect_enforced():
     m.map(0x10000, 0x4000, PageState.ReadWrite)
     m.protect(0x10000, 0x4000, int(Access.Read))
     assert not m.write(0x10000, b"xxxxx").is_ok()
+    # range guards mirror C++ CheckRange (no silent Ok, no huge range())
+    assert not m.protect(0x10000, 0, int(Access.Read)).is_ok()
+    assert not m.synchronize(0x10000, 0).is_ok()
+    assert not m.protect(1 << 48, 0x4000, int(Access.Read)).is_ok()
 
 def test_bda_bounded_retry():
     m = GuestMemory()

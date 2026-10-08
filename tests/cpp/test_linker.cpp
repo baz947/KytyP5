@@ -66,6 +66,14 @@ int main() {
              .ok());
   assert(sr.ResolveTls(1, "tlsvar", "", 2).ok());
   assert(!sr.ResolveObject(1, "tlsvar", "", 2).ok());
+  // weak vs strong: strong definition wins deterministically
+  assert(sr.Define(SymbolEntry{{2, "dup", SymbolType::Func, ""}, 2, 0x3000, 8,
+                               SymbolBinding::Weak, true})
+             .ok());
+  assert(sr.Define(SymbolEntry{{2, "dup", SymbolType::Func, ""}, 3, 0x4000, 8,
+                               SymbolBinding::Global, true})
+             .ok());
+  assert(sr.ResolveFunction(2, "dup", "", 9).ok().value.value == 0x4000);
 
   // 5. Relocations: relative applied, missing dep deferred, stub policy.
   RelocationEngine re;

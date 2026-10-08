@@ -94,6 +94,20 @@ int main() {
   assert(pad.SubmitHostInput(0, raw).ok());
   auto gs = pad.GuestState(0);
   assert(gs.ok() && gs.value.lx == 1.0f && gs.value.ly == 0.0f);
+  // Triggers are 0..1: values must survive verbatim (regression for the
+  // old (v+1)/2 mapping that corrupted normalized input).
+  PadState trig;
+  trig.l2 = 0.25f;
+  trig.r2 = 0.75f;
+  assert(pad.SubmitHostInput(0, trig).ok());
+  auto gt = pad.GuestState(0);
+  assert(gt.ok() && gt.value.l2 == 0.25f && gt.value.r2 == 0.75f);
+  PadState nantrig;
+  nantrig.l2 = std::numeric_limits<float>::quiet_NaN();
+  nantrig.r2 = 5.0f;
+  assert(pad.SubmitHostInput(0, nantrig).ok());
+  auto gn = pad.GuestState(0);
+  assert(gn.ok() && gn.value.l2 == 0.0f && gn.value.r2 == 1.0f);
   assert(pad.SetOutput(0, PadOutput{10, 20, 1, 2, 3, 0, 0, false}).ok());
   assert(pad.Output(0).ok().value.rumble_large == 20);
   assert(!pad.GuestState(3).ok());  // not connected
