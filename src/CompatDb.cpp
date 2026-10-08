@@ -422,3 +422,5 @@ void CompatDatabase::Clear() {
   titles_.clear();
   scores_.clear();
 }
+
+}  // namespace kyty::infra
