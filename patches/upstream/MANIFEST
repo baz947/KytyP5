@@ -4,4 +4,9 @@
 # apply: git -C upstream/KyTyPS5 apply --check ../../patches/upstream/<file>
 855-getimage-diagnostics.patch | KytyPS5/KytyPS5#855 | 5a8808086a9815b67d4822cd20cf1e8a7a05f002 | diagnostic-only | GetHandle image Fail now reports handle arity + per-dword type/proof states
 1005-materialize-diagnostics.patch | KytyPS5/KytyPS5#1005 | 5a8808086a9815b67d4822cd20cf1e8a7a05f002 | diagnostic-only | silent early-false exits in MaterializeResources now use SpecializationFail with the reason
+1070-fault-module-attribution.patch | KytyPS5/KytyPS5#1070 | 5a8808086a9815b67d4822cd20cf1e8a7a05f002 | diagnostic-only | host-exception report gains fault-pc module+offset and guest stack trace via existing StackTrace
+226-videoout-diagnostics.patch | KytyPS5/KytyPS5#226 | 5a8808086a9815b67d4822cd20cf1e8a7a05f002 | diagnostic-only | compressed video-out EXIT now reports addr/size/compression/dirty flags
+485-gds-fill-diagnostics.patch | KytyPS5/KytyPS5#485 | 5a8808086a9815b67d4822cd20cf1e8a7a05f002 | diagnostic-only | silent GDS fill OOB guard now reports vaddr/size/gds-size
+# NOTE KytyPS5/KytyPS5#485 stub return-0: UnresolvedImportStub logging already complete (name/type/bind/program); changing return-0 to fatal risks regressing surviving titles — no patch.
+# NOTE KytyPS5/KytyPS5#485 format-16: needs a new format implementation, not a diagnostic — no patch.
 # NOTE KytyPS5/KytyPS5#281 (missing-opcode aggregate): no patch — upstream WithUnsupportedReason/InstructionToString already report family+opcode+raw+reason. Closed our-side instead: SOP1/2/K/C, VOP3P, VINTRP, EXP as first-class coverage entries (RdnaIsaFull).

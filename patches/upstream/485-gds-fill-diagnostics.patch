@@ -1,0 +1,10 @@
+diff --git a/src/graphics/host_gpu/renderer/cache/bufferCache.cpp b/src/graphics/host_gpu/renderer/cache/bufferCache.cpp
+--- a/src/graphics/host_gpu/renderer/cache/bufferCache.cpp
++++ b/src/graphics/host_gpu/renderer/cache/bufferCache.cpp
+@@ -537,3 +537,5 @@
+ 		if (vaddr > m_gds_buffer.Size() || size > m_gds_buffer.Size() - vaddr) {
+-			EXIT("BufferCache: GDS fill range is out of bounds\n");
++		EXIT("BufferCache: GDS fill range is out of bounds, vaddr=0x%016" PRIx64
++		     " size=0x%016" PRIx64 " gds_size=0x%016" PRIx64 "\n",
++		     vaddr, size, m_gds_buffer.Size());
+ 		}
