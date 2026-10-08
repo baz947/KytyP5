@@ -54,6 +54,12 @@ class CompatDatabase {
                         const std::string& version, CompatScore s);
   Result<CompatScore> Score(const std::string& title_id,
                             const std::string& version) const;
+  // Durability: minimal self-describing JSON (titles + scores).
+  // Save never loses data silently; Load rejects corrupt files with a
+  // structured error and leaves the DB untouched.
+  Result<void> Save(const std::string& path) const;
+  Result<void> Load(const std::string& path);
+  void Clear();
 
  private:
   static std::string Key(const std::string& t, const std::string& v) {

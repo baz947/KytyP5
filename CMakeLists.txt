@@ -53,6 +53,7 @@ add_library(kyty_semantic
   src/CorpusCompatBridge.cpp
   src/RdnaIsaFull.cpp
   src/P2PerfPresent.cpp
+  src/SoakRunner.cpp
 )
 target_include_directories(kyty_semantic PUBLIC include)
 
@@ -80,7 +81,7 @@ set_target_properties(kyty_semantic PROPERTIES
 enable_testing()
 
 # C++ regression tests (plain assert, no external deps -> CI friendly)
-foreach(t test_memory test_fault test_clock test_handle test_wait test_linker test_services test_gpu test_shader test_infra test_isa_corpus test_backend_bridge test_p2_rdna)
+foreach(t test_memory test_fault test_clock test_handle test_wait test_linker test_services test_gpu test_shader test_infra test_isa_corpus test_backend_bridge test_p2_rdna test_soak)
   add_executable(${t} tests/cpp/${t}.cpp)
   target_link_libraries(${t} PRIVATE kyty_semantic)
   if(MSVC)
